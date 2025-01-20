@@ -8,7 +8,7 @@ async function getPokemon(id) {
   const response = await fetch(url);
   const responseJson = await response.json();
   const img = responseJson.sprites.other['official-artwork'].front_default;
-  return {id: responseJson.id, name: responseJson.name , img};
+  return {id: responseJson.id, name: responseJson.name , clicked: false, img};
 }
 
 function App() {
@@ -25,6 +25,16 @@ function App() {
     }
     getAllPokemon();
   }, []);
+
+  const handleClick = (pokemonObj) => {
+    console.log('clicked! ' + pokemonObj.name);
+    if (pokemonObj.clicked) {
+      console.log('you lose');
+    } else {
+      pokemonObj.clicked = true;
+    }
+  };
+
   return (
     <>
       <h1>Pokemon Memory Game</h1>
@@ -32,7 +42,7 @@ function App() {
       <div id="table">
         {
           pokemon.map((p) => (
-            <div key={p.id} className="card">
+            <div key={p.id} className="card" onClick={() => handleClick(p)}>
               <img src={p.img} alt={p.name} />
               <p>{p.name}</p>
             </div>
