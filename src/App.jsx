@@ -3,6 +3,14 @@ import './App.css';
 
 const POKEMON_IDS = [1, 4, 7, 25, 152, 155, 158, 175, 252, 255, 258, 151];
 
+function randomize(a, b) {
+  if(Math.random() > Math.random()) {
+    return 1;
+  } else {
+    return -1;
+  }
+}
+
 async function getPokemon(id) {
   const url = 'https://pokeapi.co/api/v2/pokemon/' + id + '/';
   const response = await fetch(url);
@@ -33,6 +41,11 @@ function App() {
     } else {
       pokemonObj.clicked = true;
     }
+    setPokemon((prev) => {
+      const newOrder = prev.slice();
+      newOrder.sort(randomize);
+      return newOrder;
+    });
   };
 
   return (
