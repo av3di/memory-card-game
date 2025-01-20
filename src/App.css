@@ -3,31 +3,47 @@
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 20px;
   text-align: center;
 }
 #table {
   display: flex;
-  flex-wrap: wrap;
+  flex-flow: row wrap;
   justify-content: space-between;
 }
+
+p {
+  font-size: 1rem;
+}
+
 .card {
   border: 5px solid #ffc300;
   box-sizing: border-box;
   border-radius: 5px;
   margin-bottom: 20px;
-  flex: 0 0 22%;
+  flex: 0 0 45%;
   background: rgb(192,225,235);
   background: radial-gradient(circle, #fff9e6 0%, #fff3ce 47%, #ffeeb7 100%);
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
 }
+
 .card img {
   max-width: 100%;
 }
+
 .card p {
-  font-size: 36px;
   font-weight: 500;
   background-color: #D95D39;
   color: white;
   margin-bottom: 0;
   margin-top: 0;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+@media screen and (min-width: 667px) {
+  .card {
+    flex: 0 0 22%;
+  }
 }
