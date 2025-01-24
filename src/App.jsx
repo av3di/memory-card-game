@@ -1,5 +1,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import './App.css';
+import Header from './components/Header';
+import Modal from './components/Modal';
 
 const POKEMON_IDS = [1, 4, 7, 25, 152, 155, 158, 175, 252, 255, 258, 151];
 
@@ -66,8 +68,7 @@ function App() {
 
   return (
     <>
-      <h1>Pokemon Memory Game</h1>
-      <p>Get points by clicking on an image but don't click the same image more than once!</p>
+      <Header />
       <div id="table">
         {
           pokemon.map((p) => (
@@ -78,13 +79,7 @@ function App() {
           ))
         }
       </div>
-      <div className={`overlay ${isPlaying ? '' : 'show'}`}>
-        <div className="popup">
-          <h2>You {won ? 'Win!' : 'Lose :\\'}</h2>
-          <p>Play again?</p>
-          <button onClick={handleRestart}>restart game</button>
-        </div>
-      </div>
+      <Modal handleRestart={handleRestart} won={won} isPlaying={isPlaying} />
     </>
   )
 }
