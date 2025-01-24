@@ -45,7 +45,7 @@ function App() {
     } else {
       setPokemon((prev) => {
         const updatedPokemon = prev.map((p) => p.id === pokemonObj.id ? {...p, clicked: true } : p );
-        if(updatedPokemon.some((p) => p.clicked === false) === false) {
+        if(updatedPokemon.every((p) => p.clicked === true)) {
           setIsPlaying(false);
           setWon(true);
         } else {
