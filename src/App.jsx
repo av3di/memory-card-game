@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import './App.css';
 
 const POKEMON_IDS = [1, 4, 7, 25, 152, 155, 158, 175, 252, 255, 258, 151];
 
 function randomize(a, b) {
-  if(Math.random() > Math.random()) {
+  if(Math.random() > 0.5) {
     return 1;
   } else {
     return -1;
@@ -21,6 +21,8 @@ async function getPokemon(id) {
 
 function App() {
   const [pokemon, setPokemon] = useState([]);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [won, setWon] = useState(false);
 
   useEffect(() => {
     const getAllPokemon = async () => {
@@ -35,17 +37,31 @@ function App() {
   }, []);
 
   const handleClick = (pokemonObj) => {
-    console.log('clicked! ' + pokemonObj.name);
     if (pokemonObj.clicked) {
-      console.log('you lose');
+      setIsPlaying(false);
+      setWon(false);
     } else {
-      pokemonObj.clicked = true;
+      setPokemon((prev) => {
+        const updatedPokemon = prev.map((p) => p.id === pokemonObj.id ? {...p, clicked: true } : p );
+        if(updatedPokemon.some((p) => p.clicked === false) === false) {
+          setIsPlaying(false);
+          setWon(true);
+        } else {
+          updatedPokemon.sort(randomize);
+        }
+        return updatedPokemon;
+      });
     }
+  };
+
+  const handleRestart = () => {
     setPokemon((prev) => {
-      const newOrder = prev.slice();
-      newOrder.sort(randomize);
-      return newOrder;
+      const reset = prev.map((p) => ({...p, clicked: false}));
+      reset.sort(randomize);
+      return reset;
     });
+    setIsPlaying(true);
+    setWon(false);
   };
 
   return (
@@ -61,6 +77,13 @@ function App() {
             </div>
           ))
         }
+      </div>
+      <div className={`overlay ${isPlaying ? '' : 'show'}`}>
+        <div className="popup">
+          <h2>You {won ? 'Win!' : 'Lose :\\'}</h2>
+          <p>Play again?</p>
+          <button onClick={handleRestart}>restart game</button>
+        </div>
       </div>
     </>
   )
