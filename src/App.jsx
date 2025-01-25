@@ -15,25 +15,39 @@ function randomize(a, b) {
 
 async function getPokemon(id) {
   const url = 'https://pokeapi.co/api/v2/pokemon/' + id + '/';
-  const response = await fetch(url);
-  const responseJson = await response.json();
-  const img = responseJson.sprites.other['official-artwork'].front_default;
-  return {id: responseJson.id, name: responseJson.name , clicked: false, img};
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch Pokémon with id ${id}: ${response.statusText}`);
+    }
+    const responseJson = await response.json();
+    const img = responseJson.sprites.other['official-artwork'].front_default;
+    return {id: responseJson.id, name: responseJson.name , clicked: false, img};
+  } catch (e) {
+    console.error(`Error fetching pokemon #${id}: `, e);
+    throw e;
+  }
 }
 
 function App() {
   const [pokemon, setPokemon] = useState([]);
   const [isPlaying, setIsPlaying] = useState(true);
   const [won, setWon] = useState(false);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
     const getAllPokemon = async () => {
       const monsters = [];
-      for(let num of POKEMON_IDS) {
-        const monster = await getPokemon(num);
-        monsters.push(monster);
+      try {
+        for(let num of POKEMON_IDS) {
+          const monster = await getPokemon(num);
+          monsters.push(monster);
+        }
+        setPokemon(monsters);
+      } catch (e) {
+        setError(true);
+        console.error("There was an issue: ", e);
       }
-      setPokemon(monsters);
     }
     getAllPokemon();
   }, []);
@@ -69,7 +83,8 @@ function App() {
   return (
     <>
       <Header />
-      <div id="table">
+      {error && <p>Sorry, something went wrong. Please try again later</p>}
+      {!error && <div id="table">
         {
           pokemon.map((p) => (
             <div key={p.id} className="card" onClick={() => handleClick(p)}>
@@ -78,7 +93,7 @@ function App() {
             </div>
           ))
         }
-      </div>
+      </div>}
       <Modal handleRestart={handleRestart} won={won} isPlaying={isPlaying} />
     </>
   )
